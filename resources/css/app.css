@@ -1,0 +1,20 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+
+html, body {
+    font-family: 'Inter', sans-serif;
+}
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+.selector input,
+.selector input:focus {
+    box-shadow: none;
+    color: white!important;
+    font-size: 0.875rem!important;
+    line-height: 1.75rem!important;
+}

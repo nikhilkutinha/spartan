@@ -1,0 +1,18 @@
+@import 'vxe-table/styles/variable.scss';
+
+$vxe-font-color: #F3F4F6;
+$vxe-primary-color: #2C7ECF;
+
+$vxe-icon-background-color: #98989E;
+
+$vxe-table-font-color: #F3F4F6;
+$vxe-table-resizable-color: #95969a;
+$vxe-table-header-background-color: #1F2937;
+$vxe-table-body-background-color: #1F2937;
+$vxe-table-background-color: #1F2937;
+$vxe-table-row-hover-background-color: lighten(#333232, 10%);
+$vxe-table-row-checked-background-color: lighten(#333232, 5%);
+$vxe-table-border-width: 1px;
+$vxe-table-border-color: #111827;
+
+@import 'vxe-table/styles/modules.scss';
