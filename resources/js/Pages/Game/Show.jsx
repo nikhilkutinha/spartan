@@ -5,7 +5,7 @@ import { IconLink } from '@tabler/icons'
 import moment from 'moment'
 import React from 'react'
 
-import { useQuery } from '@/hooks'
+import { useQuery } from '@/utils'
 import Default from '@/Layout/Default'
 import Alert from '@/Shared/Alert'
 import Field from '@/Shared/Field'
@@ -105,13 +105,15 @@ export default function Show() {
 					<div className="container px-4 py-10 mx-auto sm:px-6 lg:px-8">
 						<div className="grid grid-cols-12 gap-8">
 							<div className="col-span-12 xl:col-span-3">
-								<div className="relative bg-gray-800 aspect-w-3 aspect-h-4">
-									<img
-										className="absolute inset-0 object-cover"
-										loading="lazy"
-										src={game.poster_url}
-										alt={`Poster for ${game.title}`}
-									/>
+								<div className="max-w-xs">
+									<figure className="relative bg-gray-800 shadow-lg aspect-w-3 aspect-h-4">
+										<img
+											className="absolute inset-0 object-cover"
+											loading="lazy"
+											src={game.poster_url}
+											alt={`Poster for ${game.title}`}
+										/>
+									</figure>
 								</div>
 							</div>
 
@@ -120,7 +122,7 @@ export default function Show() {
 									<h2 className="text-xl font-semibold text-white">
 										{game.title}
 									</h2>
-									<div className="flex items-center text-[#a3a3a3] space-x-3">
+									<div className="flex items-center text-true-gray-400 space-x-3">
 										<span>
 											{moment(game.released_on).format(
 												'MMM Do, YYYY'
@@ -145,7 +147,7 @@ export default function Show() {
 								<div className="space-y-4">
 									<div className="max-w-4xl">
 										<p
-											className="text-gray-200 line-clamp-3"
+											className="text-gray-200 line-clamp-3 leading-relaxed"
 											title={game.description}
 										>
 											{game.description}
@@ -154,7 +156,7 @@ export default function Show() {
 
 									{game.platforms && (
 										<div className="flex">
-											<span className="mr-2 text-[#a3a3a3]">
+											<span className="mr-2 text-true-gray-400">
                                                 Platforms:
 											</span>
 											<p className="text-gray-200">
@@ -163,18 +165,7 @@ export default function Show() {
 										</div>
 									)}
 
-									{game.companies && (
-										<div className="flex">
-											<span className="mr-2 text-[#a3a3a3]">
-                                                Companies:
-											</span>
-											<p className="text-gray-200">
-												{game.companies.join(', ')}
-											</p>
-										</div>
-									)}
-
-									{game.editions.length ? (
+									{game.editions.length > 0 && 
 										<Field
 											htmlFor="edition"
 											label="Edition"
@@ -201,9 +192,7 @@ export default function Show() {
 												)}
 											</Select>
 										</Field>
-									) : (
-										''
-									)}
+									}
 								</div>
 							</div>
 						</div>

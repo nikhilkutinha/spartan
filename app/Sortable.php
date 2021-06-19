@@ -7,14 +7,7 @@ use Illuminate\Support\Facades\Schema;
 
 trait Sortable
 {
-    /**
-     * Scope a query to sort results.
-     * 
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $sort
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeSort(Builder $query, string $sort = '')
+    public function scopeSort(Builder $query, string $sort = ''): Builder
     {
         $sortables = data_get($this, 'sortables', Schema::getColumnListing(($this->getTable())));
 

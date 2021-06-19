@@ -2,20 +2,20 @@
 
 namespace App\Models;
 
+use App\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
-use App\Sortable;
 
 class Edition extends Model
 {
-    use HasFactory;
-    use Sortable;
-    use Searchable;
+    use HasFactory,
+        Sortable,
+        Searchable;
 
     /**
      * The fields that are sortable.
-     * 
+     *
      * @var array
      */
     public $sortables = [
@@ -26,7 +26,7 @@ class Edition extends Model
 
     /**
      * The fields that aren't mass fillable.
-     * 
+     *
      * @var array
      */
     protected $guarded = [
@@ -37,7 +37,7 @@ class Edition extends Model
 
     /**
      * The game assiciated with the edition.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function game()

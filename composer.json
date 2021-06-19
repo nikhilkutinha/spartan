@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^7.4|^8.0",
         "backpack/crud": "4.1.*",
         "dbrekelmans/bdi": "^0.3.0",
         "fabpot/goutte": "^4.0",

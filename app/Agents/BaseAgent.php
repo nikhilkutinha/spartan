@@ -2,19 +2,20 @@
 
 namespace App\Agents;
 
-use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Panther\Client;
 
 abstract class BaseAgent implements Agent
 {
     /**
-     * The product URL. 
+     * The URL to be opened.
      */
     protected string $url;
 
     /**
-     * The headers that need to be sent with a request.
+     * The headers to be sent during a HTTP request.
      */
     protected const HEADERS = [
         'Accept-Language' => 'en-US,en;q=0.9',
@@ -22,15 +23,17 @@ abstract class BaseAgent implements Agent
     ];
 
     /**
-     * The chrome driver arguments.
+     * The arguments to be passed into the chrome driver.
      */
-    protected const CHROME_ARGUMENTS = ['--disable-blink-features=AutomationControlled'];
+    protected const CHROME_ARGUMENTS = [
+        '--disable-blink-features=AutomationControlled',
+        '--log-level=3',
+        '--headless',
+        'User-Agent=' . self::HEADERS['User-Agent'],
+    ];
 
-    /**
-     * Create a new base agent instance.
-     * 
-     * @param  \Symfony\Component\DomCrawler\Crawler  $crawler
-     */
+    protected Crawler $crawler;
+
     public function __construct(Crawler $crawler)
     {
         $this->crawler = $crawler;
@@ -44,17 +47,17 @@ abstract class BaseAgent implements Agent
     }
 
     /**
-     * Fluent method to make HTTP requests.
+     * Fluent method to utilize laravel's HTTP client.
      */
-    protected function http() : \Illuminate\Http\Client\PendingRequest
+    protected function http(): PendingRequest
     {
         return Http::withHeaders(self::HEADERS);
     }
 
     /**
-     * Create a new panther client instance.
+     * Instantiate the panther client.
      */
-    protected function createPantherClient() : \Symfony\Component\Panther\Client
+    protected function createPantherClient(): Client
     {
         return Client::createChromeClient(null, self::CHROME_ARGUMENTS);
     }

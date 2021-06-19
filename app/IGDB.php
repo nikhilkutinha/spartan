@@ -2,41 +2,26 @@
 
 namespace App;
 
-use MarcReichel\IGDBLaravel\Models\Game;
-use MarcReichel\IGDBLaravel\Models\Company;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use MarcReichel\IGDBLaravel\Models\Company;
+use MarcReichel\IGDBLaravel\Models\Game;
 
 class IGDB
 {
-    /**
-     * The game URL. 
-     * 
-     * @var string
-     */
-    protected $url;
+    protected string $url;
 
     public function __construct(string $url)
     {
         $this->url = $url;
     }
 
-    /**
-     * A fluent method to instantiate the class.
-     *
-     * @param  string  $url
-     */
     public static function url(string $url): self
     {
         return new self($url);
     }
 
-    /**
-     * Get the finalized information.
-     *
-     * @param none
-     * @return \Illuminate\Support\Collection|null
-     */
-    public function gatherInformation()
+    public function gatherInformation(): ?array
     {
         $slug = $this->getSlug($this->url);
 
@@ -50,7 +35,7 @@ class IGDB
             ])
             ->first();
 
-        if (!$game) return;
+        if (! $game) return null;
 
         return array_merge(
             collect($game)->only([
@@ -63,25 +48,13 @@ class IGDB
         );
     }
 
-    /**
-     * Get the slug from the specified URL.
-     *
-     * @param  string  $url
-     * @return string
-     */
-    protected function getSlug(string $url)
+    protected function getSlug(string $url): string
     {
         return Str::of($url)
             ->match('/(?<=igdb.com\/games\/)([\w\d-]+)(?=\/?)/');
     }
 
-    /**
-     * Get involved companies names.
-     * 
-     * @param  array|object  $involved
-     * @return array
-     */
-    protected function getInvolvedCompanies($involved)
+    protected function getInvolvedCompanies(array $involved): Collection
     {
         return collect($involved)->map(function ($participant) {
             $company =  Company::where('changed_company_id', $participant->company)->first();
@@ -90,27 +63,18 @@ class IGDB
         });
     }
 
-    /**
-     * Force the image url to return a higher resolution image.
-     *
-     * @param  string  $url
-     * @return string
-     */
-    protected function resizeImageUrl(string $url, string $preset = 't_1080p')
+    protected function resizeImageUrl(string $url, string $preset = 't_1080p'): string
     {
+        if (! $url) return '';
+
         return 'https:' . Str::replace('t_thumb', $preset, $url);
     }
 
-    /**
-     * Get the related attributes of the game.
-     *
-     * @param  Illuminate\Support\Collection  $items
-     * @return array
-     */
-    protected function getRelatedInformation($items)
+    protected function getRelatedInformation(Collection $items): array
     {
-        $cover = $this->resizeImageUrl($items['cover']['url']);
-        $screenshot = $this->resizeImageUrl($items['screenshots']->last()['url']);
+        $cover = $this->resizeImageUrl($items['cover']['url'] ?? '');
+
+        $screenshot = $this->resizeImageUrl($items['screenshots']->last()['url'] ?? '');
 
         $platforms = $items['platforms']->map(function ($platform) {
             return $platform['abbreviation'];

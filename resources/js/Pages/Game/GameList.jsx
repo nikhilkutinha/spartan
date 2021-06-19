@@ -4,7 +4,7 @@ import GameListItem from './GameListItem'
 
 export default function GameList({ games }) {
 	return (
-		<div className="grid grid-cols-10 gap-3 lg:gap-6">
+		<div className="grid grid-cols-12 xl:grid-cols-10 gap-3 lg:gap-6">
 			{games.map((game) => (
 				<div
 					key={game.id}

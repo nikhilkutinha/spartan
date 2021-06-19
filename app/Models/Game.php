@@ -2,22 +2,21 @@
 
 namespace App\Models;
 
+use App\Sortable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Scout\Searchable;
-use App\Sortable;
-use Carbon\Carbon;
 
 class Game extends Model
 {
-    use HasFactory;
-    use Sortable;
-    use Searchable;
+    use HasFactory,
+        Sortable,
+        Searchable;
 
     /**
      * The fields that are not mass fillable.
-     * 
+     *
      * @var array
      */
     protected $guarded = [
@@ -44,7 +43,6 @@ class Game extends Model
         'poster_url',
         'backdrop_url',
         'current_lowest_price',
-        'previous_lowest_price',
     ];
 
     /**
@@ -59,7 +57,7 @@ class Game extends Model
 
     /**
      * The price history associated with the game.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\hasManyThrough
      */
     public function offerHistory()
@@ -69,7 +67,7 @@ class Game extends Model
 
     /**
      * The offers associated with the game.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function offers()
@@ -79,12 +77,15 @@ class Game extends Model
 
     /**
      * Get the offer with the lowest price.
-     * 
+     *
      * @return \App\Models\Offer|null
      */
     public function getLowestOfferAttribute()
     {
-        return $this->offers()->orderByRaw('-current_price DESC')->first();
+        return $this->offers()
+            ->where('current_price', '!=', null)
+            ->orderBy('current_price')
+            ->first();
     }
 
     public function getCurrentLowestPriceAttribute()
@@ -95,22 +96,8 @@ class Game extends Model
     }
 
     /**
-     * Get the offer with the lowest price.
-     * 
-     * @return \App\Models\Offer|null
-     */
-    public function getPreviousLowestPriceAttribute()
-    {
-        return collect($this->offerHistory()
-            ->whereDate('histories.created_at', Carbon::yesterday())
-            ->orderBy('histories.price')
-            ->skip(1)
-            ->first())->get('price');
-    }
-
-    /**
      * The editions associated with the game.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function editions()

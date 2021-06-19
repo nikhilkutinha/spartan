@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Models\Vendor;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use App\Http\Controllers\Controller;
+use App\Models\Vendor;
+use Inertia\Inertia;
 
 
 class VendorController extends Controller

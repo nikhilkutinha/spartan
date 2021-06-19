@@ -16,6 +16,7 @@ class AddGameIdColumnToOffersTable extends Migration
         Schema::table('offers', function (Blueprint $table) {
             $table->foreignId('game_id')->constrained()->onDelete('cascade');
             $table->foreignId('edition_id')->constrained()->onDelete('cascade');
+            $table->foreignId('vendor_id')->constrained()->onDelete('cascade');
         });
     }
 

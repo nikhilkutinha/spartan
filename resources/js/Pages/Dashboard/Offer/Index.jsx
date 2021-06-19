@@ -8,7 +8,7 @@ import moment from 'moment'
 import React from 'react'
 
 import { nullFormatter } from '@/helpers'
-import { useQuery } from '@/hooks'
+import { useQuery } from '@/utils'
 import Dashboard from '@/Layout/Dashboard'
 import Button from '@/Shared/Button'
 import Pagination from '@/Shared/Pagination'

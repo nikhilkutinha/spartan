@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Models\Edition;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use App\Http\Controllers\Controller;
+use App\Models\Edition;
+use Inertia\Inertia;
 
 class EditionController extends Controller
 {
@@ -90,7 +89,7 @@ class EditionController extends Controller
                 'game_id' => ['required', 'integer', 'exists:App\Models\Game,id'],
             ])
         );
-        
+
         return redirect()->back()->with('success', 'Edition updated.');
     }
 

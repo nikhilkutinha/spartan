@@ -1,7 +1,7 @@
 import { useForm } from '@inertiajs/inertia-react'
 import React from 'react'
 
-import { useAutocomplete } from '@/hooks'
+import { useAutocomplete } from '@/utils'
 import Dashboard from '@/Layout/Dashboard'
 import Autocomplete from '@/Shared/Autocomplete'
 import Button from '@/Shared/Button'
@@ -22,6 +22,7 @@ export default function Create() {
 		vendor: '',
 		game: '',
 		edition_id: '',
+		current_price: '',
 		url: '',
 	})
 
@@ -60,8 +61,8 @@ export default function Create() {
 								onChange={(value) => setData('game', value)}
 							/>
 						</Field>
-
-						{form.game.editions?.length > 0 && (
+							
+						{(form.game && form.game.editions.length) > 0 && (
 							<Field
 								htmlFor="edition"
 								label="Edition"
@@ -118,6 +119,18 @@ export default function Create() {
 								value={form.url}
 								onChange={(e) => setData('url', e.target.value)}
 								error={errors.url}
+							/>
+						</Field>
+
+						<Field
+							htmlFor="current_price"
+							label="Current price"
+							className="col-span-3 sm:col-span-2"
+						>
+							<Input
+								value={form.current_price}
+								onChange={(e) => setData('current_price', e.target.value)}
+								error={errors.current_price}
 							/>
 						</Field>
 					</div>

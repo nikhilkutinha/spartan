@@ -7,7 +7,7 @@ import { IconChevronDown,IconEye, IconPencil, IconTrash } from '@tabler/icons'
 import moment from 'moment'
 import React from 'react'
 
-import { useQuery } from '@/hooks'
+import { useQuery } from '@/utils'
 import Dashboard from '@/Layout/Dashboard'
 import Button from '@/Shared/Button'
 import Dropdown from '@/Shared/Dropdown'
@@ -31,10 +31,6 @@ function Header() {
 				</Dropdown.Trigger>
 
 				<Dropdown.Content>
-					<Dropdown.Link href={route('dashboard.games.create')}>
-						Manual
-					</Dropdown.Link>
-
 					<Dropdown.Link href={route('dashboard.games.create')}>
 						Automatic
 					</Dropdown.Link>

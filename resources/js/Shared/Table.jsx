@@ -73,12 +73,10 @@ export default function Table({
 										...column.getSortByToggleProps(),
 									})}
 									scope="col"
-									className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-300 uppercase"
+									className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-300 uppercase whitespace-nowrap"
 								>
 									<div className="flex items-center w-full">
-										{/* <span className="whitespace-nowrap"> */}
 										{column.render('Header')}
-										{/* </span> */}
 
 										{column.isSorted && (
 											<IconArrowNarrowDown

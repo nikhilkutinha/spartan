@@ -23,16 +23,16 @@ export default function Create() {
 				title="External Identification"
 				description={
 					<>
-                        Please add in the Internet Game Database (
+                        Please add in the 
 						<a
 							className="text-red-500"
 							href="//igdb.com"
 							target="_blank"
 							rel="noreferrer"
 						>
-                            IGDB
+                            &nbsp;IGDB URL&nbsp;
 						</a>
-                        ) URL of the game you would like to add. We&apos;ll
+                        of the game you would like to add. We&apos;ll
                         automatically collect information and add the game to
                         our database. You may modify the autofilled information
                         later.

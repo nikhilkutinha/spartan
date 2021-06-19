@@ -2,20 +2,25 @@
 
 namespace App\Models;
 
+use App\Jobs\SynchronizeOffer;
+use App\Sortable;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
-use App\Sortable;
 
 class Offer extends Model
 {
-    use HasFactory;
-    use Sortable;
-    use Searchable;
+    use HasFactory,
+        Sortable,
+        Searchable;
+
+    protected const SYNC_THRESHOLD = 3600;
 
     /**
      * The fields that are sortable.
-     * 
+     *
      * @var array
      */
     public $sortables = [
@@ -28,7 +33,7 @@ class Offer extends Model
 
     /**
      * The fields that are not mass fillable.
-     * 
+     *
      * @var array
      */
     protected $guarded = [
@@ -56,7 +61,7 @@ class Offer extends Model
 
     /**
      * The vendor associated with the offer.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function vendor()
@@ -66,7 +71,7 @@ class Offer extends Model
 
     /**
      * The game associated with the offer.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function game()
@@ -76,7 +81,7 @@ class Offer extends Model
 
     /**
      * The price history associated with the offer.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function history()
@@ -86,9 +91,9 @@ class Offer extends Model
 
     /**
      * The edition associated with the offer.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */ 
+     */
     public function edition()
     {
         return $this->belongsTo(Edition::class);
@@ -96,10 +101,8 @@ class Offer extends Model
 
     /**
      * Get the lowest price from history.
-     * 
-     * @return float
      */
-    public function getLowestPriceAttribute()
+    public function getLowestPriceAttribute(): float
     {
         $entry = $this->history()->orderBy('price')->first();
 
@@ -109,12 +112,36 @@ class Offer extends Model
 
     /**
      * Modify the query used to retrieve models when making all of the models searchable.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function makeAllSearchableUsing($query)
+    protected function makeAllSearchableUsing(Builder $query): Builder
     {
         return $query->with(['game', 'vendor']);
+    }
+
+    /**
+     * Scope the query to reteieve offers that fall within the specified threshold.
+     */
+    protected function scopeWithinSyncthreshold(Builder $query): Builder
+    {
+        return $query->where(
+            'last_synced_at',
+            '<',
+            Carbon::now()->subSeconds(self::SYNC_THRESHOLD)->toDateTimeString()
+        )->orWhereNull('last_synced_at');
+    }
+
+    /**
+     * Synchronize the offer with latest price.
+     */
+    public function sync()
+    {
+        SynchronizeOffer::dispatch(
+            $this,
+            app()->make($this->vendor->agent)
+        )->onQueue($this->vendor->name);
+
+        $this->update([
+            'last_synced_at' => now()
+        ]);
     }
 }

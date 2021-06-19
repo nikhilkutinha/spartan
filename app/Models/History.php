@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class History extends Model
 {
@@ -12,7 +12,7 @@ class History extends Model
 
     /**
      * The fields that are not mass fillable.
-     * 
+     *
      * @var array
      */
     protected $guarded = [

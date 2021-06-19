@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Models\Offer;
 use Inertia\Inertia;
-use App\Http\Controllers\Controller;
 
 
 class OfferController extends Controller
@@ -60,6 +60,7 @@ class OfferController extends Controller
                 'game_id' => ['required', 'integer', 'exists:App\Models\Game,id'],
                 'edition_id' => ['required', 'integer', 'exists:App\Models\Edition,id'],
                 'vendor_id' => ['required', 'integer', 'exists:App\Models\Vendor,id'],
+                'current_price' => ['nullable', 'numeric'],
                 'url' => ['required', 'url'],
             ])
         );
@@ -93,6 +94,7 @@ class OfferController extends Controller
                 'game_id' => ['required', 'integer', 'exists:App\Models\Game,id'],
                 'edition_id' => ['required', 'integer', 'exists:App\Models\Edition,id'],
                 'vendor_id' => ['required', 'integer', 'exists:App\Models\Vendor,id'],
+                'current_price' => ['nullable', 'numeric'],
                 'url' => ['required', 'url'],
             ])
         );

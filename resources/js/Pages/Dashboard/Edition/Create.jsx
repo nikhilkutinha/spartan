@@ -1,7 +1,7 @@
 import { useForm } from '@inertiajs/inertia-react'
 import React from 'react'
 
-import { useAutocomplete } from '@/hooks'
+import { useAutocomplete } from '@/utils'
 import Dashboard from '@/Layout/Dashboard'
 import Autocomplete from '@/Shared/Autocomplete'
 import Button from '@/Shared/Button'

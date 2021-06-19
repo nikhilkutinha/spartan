@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Models\Game;
-use App\Models\Genre;
 use App\Http\Controllers\Controller;
 use App\IGDB;
-use Inertia\Inertia;
+use App\Models\Game;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class GameController extends Controller
 {

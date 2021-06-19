@@ -15,7 +15,7 @@ class CreateHistoriesTable extends Migration
     {
         Schema::create('histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('offer_id');
+            $table->foreignId('offer_id')->constrained()->onDelete('cascade');
             $table->float('price');
             $table->timestamps();
         });

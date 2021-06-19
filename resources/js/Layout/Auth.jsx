@@ -12,7 +12,7 @@ export default function Guest({ children }) {
 				</InertiaLink>
 			</div>
 
-			<div className="w-full px-6 py-4 mt-6 overflow-hidden bg-gray-800 shadow-md sm:max-w-md sm:rounded">
+			<div className="w-full p-4 mt-6 overflow-hidden bg-gray-800 shadow-md sm:px-6 sm:max-w-md sm:rounded">
 				{children}
 			</div>
 		</div>

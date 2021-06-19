@@ -11,6 +11,7 @@ export default function Create() {
 	const { data, setData, errors, post, processing } = useForm({
 		name: '',
 		url: '',
+		agent: 'App\\Agents\\',
 	})
 
 	const createGame = (e) => {

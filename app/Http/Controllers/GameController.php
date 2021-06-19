@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\Offer;
 use Inertia\Inertia;
-use Illuminate\SUpport\Facades\DB;
-use MarcReichel\IGDBLaravel\Models\Game as IGDBGame;
 
 class GameController extends Controller
 {
@@ -16,14 +14,19 @@ class GameController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   
-        // DB::enableQueryLog();
-        
-        $games = Game::paginate(20);
-    
-        // dd(DB::getQueryLog());
-    
-        return Inertia::render('Game/Index', compact('games'));
+    {
+        $query = request()->get('search');
+
+        if ($query) {
+            $games = Game::search($query);
+        } else {
+            $games = Game::query();
+        }
+
+        return Inertia::render('Game/Index', [
+            'games' => $games->paginate(20),
+            'filters' => request()->all(),
+        ]);
     }
 
     /**
@@ -35,21 +38,19 @@ class GameController extends Controller
     public function show(int $game)
     {
         $game = Game::with('editions')->findOrFail($game);
-        
+
         $edition = request()->get('edition');
 
         $offers = Offer::with('vendor')
             ->orderBy('current_price')
-            ->where('game_id', '=', $game->id)
-            ->where('current_price', '!=', null);
+            ->where('game_id', $game->id)
+            ->whereNotNull('current_price');
 
         if (!$edition && $lowest = $game->lowest_offer) {
             $edition = $lowest->edition_id;
         }
 
         $game->offers = $offers->where('edition_id', $edition)->get();
-
-        // return $game;
 
         return Inertia::render('Game/Show', [
             'game' => $game,

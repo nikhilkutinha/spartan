@@ -2,10 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Offer;
-use App\Agents\Agent;
-use App\Services\OfferSynchronizer;
+use Illuminate\Console\Command;
 
 class OfferSynchronizerCommand extends Command
 {
@@ -38,18 +36,34 @@ class OfferSynchronizerCommand extends Command
     {
         $this->info('Syncing offers in database.');
 
-        $app = app();
+        $this->startProgressBar(Offer::count());
 
-        Offer::with('vendor')->orderBy('created_at', 'desc')->each(function ($offer) use ($app) {
-            $app->bind(Offer::class, function () use ($offer) {
-                return $offer;
+        Offer::with('vendor')
+            ->withinSyncThreshold()
+            ->orderBy('created_at', 'desc')
+            ->each(function ($offer) {
+                $offer->sync();
+
+                $this->advanceProgressBar();
             });
 
-            $app->bind(Agent::class, $offer->vendor->agent);
-
-            $app->make(OfferSynchronizer::class)->sync($offer);
-        });
+        $this->finishProgressBar();
 
         return 0;
+    }
+
+    protected function startProgressBar($max)
+    {
+        $this->output->progressStart($max);
+    }
+
+    protected function advanceProgressBar()
+    {
+        $this->output->progressAdvance();
+    }
+
+    protected function finishProgressBar()
+    {
+        $this->output->progressFinish();
     }
 }

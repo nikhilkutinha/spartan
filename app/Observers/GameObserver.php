@@ -2,16 +2,13 @@
 
 namespace App\Observers;
 
-use App\Models\Game;
 use App\Models\Edition;
+use App\Models\Game;
 
 class GameObserver
 {
     /**
      * Handle the Game "created" event.
-     *
-     * @param  \App\Models\Game  $game
-     * @return void
      */
     public function created(Game $game)
     {

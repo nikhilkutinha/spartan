@@ -1,16 +1,17 @@
 import { usePage } from '@inertiajs/inertia-react'
 import React from 'react'
 
-import { useQuery } from '@/hooks'
+import { useQuery } from '@/utils'
 import Default from '@/Layout/Default'
 import Pagination from '@/Shared/Pagination'
+import SearchInput from '@/Shared/SearchInput'
 
 import GameList from './GameList'
 
 export default function Index() {
 	const { games, filters } = usePage().props
 
-	const { onPaginate } = useQuery({ ...filters })
+	const { onPaginate, onSearch } = useQuery({ ...filters }, route('home'))
 
 	return (
 		<Default
@@ -19,16 +20,20 @@ export default function Index() {
 			}
 		>
 			<div className="container px-2 py-8 mx-auto sm:px-6 lg:px-8">
-				{games.next_page_url && (
-					<div className="flex justify-end mb-6">
-						<Pagination
-							total={games.total}
-							perPage={games.per_page}
-							currentPage={games.current_page}
-							onPaginate={onPaginate}
-						/>
-					</div>
-				)}
+				
+			
+				<div className="space-y-6 sm:flex sm:justify-between sm:space-y-0 mb-6">
+					<SearchInput onChange={onSearch} />
+					
+					<Pagination
+						total={games.total}
+						perPage={games.per_page}
+						currentPage={games.current_page}
+						onPaginate={onPaginate}
+					/>
+
+				</div>
+				
 
 				<GameList games={games.data} />
 			</div>
