@@ -40,7 +40,7 @@ class OfferSynchronizerCommand extends Command
 
         Offer::with('vendor')
             ->withinSyncThreshold()
-            ->orderBy('created_at', 'desc')
+            ->orderByDesc('created_at')
             ->each(function ($offer) {
                 $offer->sync();
 
