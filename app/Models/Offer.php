@@ -121,7 +121,7 @@ class Offer extends Model
     /**
      * Scope the query to reteieve offers that fall within the specified threshold.
      */
-    protected function scopeWithinSyncthreshold(Builder $query): Builder
+    protected function scopeWithinSyncThreshold(Builder $query): Builder
     {
         return $query->where(
             'last_synced_at',
