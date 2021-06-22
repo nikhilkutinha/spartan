@@ -18,7 +18,6 @@ class SynchronizeOffer implements ShouldQueue
         SerializesModels;
 
     protected Agent $agent;
-
     protected Offer $offer;
 
     public function __construct(Offer $offer, Agent $agent)
@@ -29,18 +28,24 @@ class SynchronizeOffer implements ShouldQueue
 
     public function handle()
     {
-        $price = $this->agent->setUrl($this->offer->url)
-            ->getPrice();
-
-        if ($price) $this->updateOffer($price);
+        $this->getPrice();
+        $this->updateOffer();
     }
 
-    protected function updateOffer(float $price)
+    protected function updateOffer()
     {
-        if ($this->offer->current_price == $price) return;
+        if (!$this->price) return;
+
+        if ($this->offer->current_price == $this->price) return;
 
         $this->offer->update([
-            'current_price' => $price,
+            'current_price' => $this->price,
         ]);
+    }
+
+    protected function getPrice()
+    {
+        $this->price = $this->agent->setUrl($this->offer->url)
+            ->getPrice();
     }
 }
