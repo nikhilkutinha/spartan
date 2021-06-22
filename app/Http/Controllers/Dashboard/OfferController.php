@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Offer;
 use Inertia\Inertia;
 
-
 class OfferController extends Controller
 {
     /**
@@ -16,24 +15,23 @@ class OfferController extends Controller
      */
     public function index()
     {
-        $query = request()->get('search');
+        $search = request()->get('search');
 
         $offers = Offer::with(['game', 'edition', 'vendor'])
+            ->when(
+                $search,
+                fn ($query, $search) => $query->whereIn(
+                    'offers.id',
+                    Offer::search($search)->keys()
+                )
+            )
             ->select(['offers.*'])
             ->leftJoin('games', 'game_id', '=', 'games.id')
             ->leftJoin('editions', 'edition_id', '=', 'editions.id')
             ->leftJoin('vendors', 'vendor_id', '=', 'vendors.id');
 
-        if ($query) {
-            $keyArray = Offer::search($query)
-                ->keys()
-                ->toArray();
-
-            $offers = $offers->whereIn('offers.id', $keyArray);
-        }
-
         return Inertia::render('Dashboard/Offer/Index', [
-            'offers' => $offers->sort('created_at')->paginate(),
+            'offers' => $offers->sort()->paginate(),
             'filters' => request()->all(),
         ]);
     }
@@ -56,13 +54,7 @@ class OfferController extends Controller
     public function store()
     {
         Offer::create(
-            request()->validate([
-                'game_id' => ['required', 'integer', 'exists:App\Models\Game,id'],
-                'edition_id' => ['required', 'integer', 'exists:App\Models\Edition,id'],
-                'vendor_id' => ['required', 'integer', 'exists:App\Models\Vendor,id'],
-                'current_price' => ['nullable', 'numeric'],
-                'url' => ['required', 'url'],
-            ])
+            request()->validate($this->rules())
         );
 
         return redirect()->back()->with('success', 'Offer created.');;
@@ -90,13 +82,7 @@ class OfferController extends Controller
     public function update(Offer $offer)
     {
         $offer->update(
-            request()->validate([
-                'game_id' => ['required', 'integer', 'exists:App\Models\Game,id'],
-                'edition_id' => ['required', 'integer', 'exists:App\Models\Edition,id'],
-                'vendor_id' => ['required', 'integer', 'exists:App\Models\Vendor,id'],
-                'current_price' => ['nullable', 'numeric'],
-                'url' => ['required', 'url'],
-            ])
+            request()->validate($this->rules())
         );
 
         return redirect()->back()->with('success', 'Offer updated.');
@@ -113,5 +99,19 @@ class OfferController extends Controller
         $offer->delete();
 
         return redirect()->back()->with('success', 'Offer deleted.');
+    }
+
+    /**
+     * Form request validation rules.
+     */
+    protected function rules()
+    {
+        return [
+            'game_id' => ['required', 'integer', 'exists:App\Models\Game,id'],
+            'edition_id' => ['required', 'integer', 'exists:App\Models\Edition,id'],
+            'vendor_id' => ['required', 'integer', 'exists:App\Models\Vendor,id'],
+            'current_price' => ['nullable', 'numeric'],
+            'url' => ['required', 'url'],
+        ];
     }
 }

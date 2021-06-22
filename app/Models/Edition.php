@@ -20,8 +20,8 @@ class Edition extends Model
      */
     public $sortables = [
         'games.title',
-        'name',
-        'created_at',
+        'editions.name',
+        'editions.created_at',
     ];
 
     /**

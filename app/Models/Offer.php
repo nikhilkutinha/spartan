@@ -16,7 +16,7 @@ class Offer extends Model
         Sortable,
         Searchable;
 
-    protected const SYNC_THRESHOLD = 3600;
+    protected const SYNC_THRESHOLD = 1;
 
     /**
      * The fields that are sortable.
@@ -27,8 +27,8 @@ class Offer extends Model
         'games.title',
         'editions.id',
         'vendors.name',
-        'created_at',
-        'current_price',
+        'offers.created_at',
+        'offers.current_price',
     ];
 
     /**
@@ -121,7 +121,7 @@ class Offer extends Model
     /**
      * Scope the query to reteieve offers that fall within the specified threshold.
      */
-    protected function scopeWithinSyncthreshold(Builder $query): Builder
+    protected function scopeWithinSyncThreshold(Builder $query): Builder
     {
         return $query->where(
             'last_synced_at',

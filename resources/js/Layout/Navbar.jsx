@@ -101,8 +101,12 @@ export default function Navbar() {
 					<div className="pt-2 pb-3 space-y-1">
 						<ResponsiveNavLink active={route().current('home')} href={route('home')}>Browse</ResponsiveNavLink>
 						<ResponsiveNavLink href={route('dashboard')}>Dashboard</ResponsiveNavLink>
-						<ResponsiveNavLink href={route('login')}>Login</ResponsiveNavLink>
-						<ResponsiveNavLink href={route('register')}>Register</ResponsiveNavLink>
+						{!auth.user && 
+							<>
+								<ResponsiveNavLink href={route('login')}>Login</ResponsiveNavLink>
+								<ResponsiveNavLink href={route('register')}>Register</ResponsiveNavLink>
+							</>
+						}
 					</div>
 				</div>
 			)}

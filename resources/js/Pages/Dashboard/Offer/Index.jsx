@@ -37,7 +37,6 @@ export default function Index() {
 		initialSortBy
 	} = useQuery({ search: '', ...filters }, route('dashboard.offers.index'))
 
-	// const data = React.useMemo(() => offers.data, []);
 	const columns = React.useMemo(
 		() => [
 			{
@@ -59,6 +58,7 @@ export default function Index() {
 			{
 				Header: 'Current price',
 				accessor: 'current_price',
+				id: 'offers.current_price',
 				Cell: ({ cell: { value } }) => (
 					<>
 						{value ? (
@@ -74,6 +74,7 @@ export default function Index() {
 			{
 				Header: 'Created at',
 				accessor: 'created_at',
+				id: 'offers.created_at',
 				Cell: ({ cell: { value } }) => (
 					<>{moment(value).format('MMM Do, YYYY')}</>
 				),

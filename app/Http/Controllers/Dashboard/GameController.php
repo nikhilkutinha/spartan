@@ -17,17 +17,18 @@ class GameController extends Controller
      */
     public function index()
     {
-        $query = request()->get('search');
+        $search = request()->get('search');
 
-        if ($query) {
-            $keyArray = Game::search($query)->keys()->toArray();
-            $games = Game::whereIn('id', $keyArray);
-        } else {
-            $games = Game::query();
-        }
+        $games = Game::when(
+            $search,
+            fn ($query, $search) => $query->whereIn(
+                'id',
+                Game::search($search)->keys()
+            )
+        );
 
         return Inertia::render('Dashboard/Game/Index', [
-            'games' => $games->sort('created_at')->paginate(),
+            'games' => $games->sort()->paginate(),
             'filters' => request()->all(),
         ]);
     }

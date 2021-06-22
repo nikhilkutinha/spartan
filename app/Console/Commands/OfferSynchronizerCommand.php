@@ -39,8 +39,8 @@ class OfferSynchronizerCommand extends Command
         $this->startProgressBar(Offer::count());
 
         Offer::with('vendor')
+            ->latest()
             ->withinSyncThreshold()
-            ->orderBy('created_at', 'desc')
             ->each(function ($offer) {
                 $offer->sync();
 

@@ -15,22 +15,21 @@ class EditionController extends Controller
      */
     public function index()
     {
-        $query = request()->get('search');
+        $search = request()->get('search');
 
         $editions = Edition::with('game')
+            ->when(
+                $search,
+                fn ($query, $search) => $query->whereIn(
+                    'editions.id',
+                    Edition::search($search)->keys()
+                )
+            )
             ->select(['editions.*'])
             ->leftJoin('games', 'game_id', '=', 'games.id');
 
-        if ($query) {
-            $keyArray = Edition::search($query)
-                ->keys()
-                ->toArray();
-
-            $editions = $editions->whereIn('editions.id', $keyArray);
-        }
-
         return Inertia::render('Dashboard/Edition/Index', [
-            'editions' => $editions->sort('created_at')->paginate(),
+            'editions' => $editions->sort()->paginate(),
             'filters' => request()->all(),
         ]);
     }
@@ -53,10 +52,7 @@ class EditionController extends Controller
     public function store()
     {
         Edition::create(
-            request()->validate([
-                'name' => ['required', 'string'],
-                'game_id' => ['required', 'integer', 'exists:App\Models\Game,id'],
-            ])
+            request()->validate($this->rules())
         );
 
         return redirect()->back()->with('success', 'Edition created.');;
@@ -84,10 +80,7 @@ class EditionController extends Controller
     public function update(Edition $edition)
     {
         $edition->update(
-            request()->validate([
-                'name' => ['required', 'string'],
-                'game_id' => ['required', 'integer', 'exists:App\Models\Game,id'],
-            ])
+            request()->validate($this->rules())
         );
 
         return redirect()->back()->with('success', 'Edition updated.');
@@ -104,5 +97,16 @@ class EditionController extends Controller
         $edition->delete();
 
         return redirect()->back()->with('success', 'Edition deleted.');
+    }
+
+    /**
+     * Form request validation rules.
+     */
+    protected function rules()
+    {
+        return [
+            'name' => ['required', 'string'],
+            'game_id' => ['required', 'integer', 'exists:App\Models\Game,id'],
+        ];
     }
 }
