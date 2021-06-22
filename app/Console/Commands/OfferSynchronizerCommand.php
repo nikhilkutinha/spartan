@@ -10,12 +10,12 @@ class OfferSynchronizerCommand extends Command
     /**
      * The name and signature of the console command.
      */
-    protected $signature = 'offers:sync';
+    protected $signature = 'offers:sync {--force}';
 
     /**
      * The console command description.
      */
-    protected $description = 'Synchronize offer prices in our database.';
+    protected $description = 'Synchronizing offers in database.';
 
     /**
      * Create a new command instance.
@@ -36,34 +36,15 @@ class OfferSynchronizerCommand extends Command
     {
         $this->info('Syncing offers in database.');
 
-        $this->startProgressBar(Offer::count());
-
         Offer::with('vendor')
+            ->when(!$this->option('force'), fn ($query) => $query->withinThreshold())
             ->latest()
-            ->withinSyncThreshold()
             ->each(function ($offer) {
                 $offer->sync();
-
-                $this->advanceProgressBar();
             });
 
-        $this->finishProgressBar();
+        $this->info('Completed!');
 
         return 0;
-    }
-
-    protected function startProgressBar($max)
-    {
-        $this->output->progressStart($max);
-    }
-
-    protected function advanceProgressBar()
-    {
-        $this->output->progressAdvance();
-    }
-
-    protected function finishProgressBar()
-    {
-        $this->output->progressFinish();
     }
 }

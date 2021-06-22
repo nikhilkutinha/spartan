@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Offer extends Model
 {
@@ -16,7 +17,7 @@ class Offer extends Model
         Sortable,
         Searchable;
 
-    protected const SYNC_THRESHOLD = 1;
+    protected const SYNC_THRESHOLD = 3600;
 
     /**
      * The fields that are sortable.
@@ -121,7 +122,7 @@ class Offer extends Model
     /**
      * Scope the query to reteieve offers that fall within the specified threshold.
      */
-    protected function scopeWithinSyncThreshold(Builder $query): Builder
+    protected function scopeWithinThreshold(Builder $query): Builder
     {
         return $query->where(
             'last_synced_at',
