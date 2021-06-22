@@ -10,7 +10,7 @@ class OfferSynchronizerCommand extends Command
     /**
      * The name and signature of the console command.
      */
-    protected $signature = 'offers:sync {--force}';
+    protected $signature = 'sync:offers {--force}';
 
     /**
      * The console command description.
